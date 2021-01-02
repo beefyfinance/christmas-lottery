@@ -6,60 +6,51 @@ const drugsTickets = require('../snapshots/normalizedDrugsTickets.json');
 const narTickets = require('../snapshots/normalizedNarTickets.json');
 const bifiTickets = require('../snapshots/normalizedBifiTickets.json');
 
-const blockHash = '0x763cddbf96151332c6ab9dd1eb8cae4bd9412246c917411ceb314d738691588f';
+const blockHash = 'INSERT_BLOCK_HASH_HERE'; // 3647837
 
 const rng = seedrandom(crypto.createHash('sha256').update(blockHash).digest('hex'));
 
-const findWinningAddress = (tickets, winningTicket) => {
-  let total = 0;
+const getTotalTickets = tickets => Object.values(tickets).reduce((a, b) => a + b);
+
+const pickWinner = (tickets, rng) => {
+  const totalTickets = getTotalTickets(tickets);
+  const winningTicket = Math.floor(rng() * totalTickets);
+
+  let ticketsCounted = 0;
 
   for (const key in tickets) {
-    total += tickets[key];
-    if (total >= winningTicket) return key;
+    ticketsCounted += tickets[key];
+    if (ticketsCounted >= winningTicket) return key;
   }
 };
 
-const getTotalTickets = tickets => Object.values(tickets).reduce((a, b) => a + b);
+// Trust Wallet - (5 Prizes) + 1 NFT
+console.log('Selecting Trust Wallet Winners');
+for (let i = 1; i <= 5; i++) {
+  console.log(`TWT winner ${i} ${pickWinner(twtTickets, rng)}`);
+}
+console.log('TWT NFT', pickWinner(twtTickets, rng));
+console.log('---');
 
-// Trust Wallet ()
-const twtTotalTickets = getTotalTickets(twtTickets);
-const twtWinningTicket = Math.floor(rng() * twtTotalTickets);
-const twtWinner = findWinningAddress(twtTickets, twtWinningTicket);
+// Thugs Finance - (5 Prizes) + 1 NFT
+console.log('Selecting Thugs Finance Winners');
+for (let i = 1; i <= 5; i++) {
+  console.log(`Thugs winner ${i} ${pickWinner(drugsTickets, rng)}`);
+}
+console.log('Thugs NFT', pickWinner(drugsTickets, rng));
+console.log('---');
 
-console.log(`The TWT lottery winning ticket is: ${twtWinningTicket}`);
-console.log(`The winning address is ${twtWinner}`);
+// Narwhalswap - 2 NFT
+console.log('Selecting Narwhalswap Winners');
+console.log('Narwhalswap NFT 1', pickWinner(narTickets, rng));
+console.log('Narwhalswap NFT 2', pickWinner(narTickets, rng));
+console.log('---');
 
-// Thugs Finance
-const thugsWinningTicket = Math.floor(rng() * 998088);
-const thugsWinner = findWinningAddress(drugsTickets, thugsWinningTicket);
-
-console.log(`The Thugs lottery winning ticket is: ${thugsWinningTicket}`);
-console.log(`The winning address is ${thugsWinner}`);
-
-// Narwhalswap
-const narWinningTicket = Math.floor(rng() * 999989);
-const narWinner = findWinningAddress(narTickets, narWinningTicket);
-
-console.log(`The Narwhalswap lottery winning ticket is: ${narWinningTicket}`);
-console.log(`The winning address is ${narWinner}`);
-
-// BIFI Maxi - Jetfuel2
-const bifiMaxiFuelWinningTicket = Math.floor(rng() * 989360);
-const bifiMaxiFuelWinner = findWinningAddress(bifiTickets, bifiMaxiFuelWinningTicket);
-
-console.log(`The BIFI Maxi Jetfuel lottery winning ticket is: ${bifiMaxiFuelWinningTicket}`);
-console.log(`The winning address is ${bifiMaxiFuelWinner}`);
-
-// BIFI Maxi - Nyanswop
-const bifiMaxiNyaWinningTicket = Math.floor(rng() * 989360);
-const bifiMaxiNyaWinner = findWinningAddress(bifiTickets, bifiMaxiNyaWinningTicket);
-
-console.log(`The BIFI Maxi Nyanswop lottery winning ticket is: ${bifiMaxiNyaWinningTicket}`);
-console.log(`The winning address is ${bifiMaxiNyaWinner}`);
-
-// BIFI Maxi - NFT Lighthouse (6)
-const bifiMaxiNftWinningTicket = Math.floor(rng() * 989360);
-const bifiMaxiNftWinner = findWinningAddress(bifiTickets, bifiMaxiNftWinningTicket);
-
-console.log(`The BIFI Maxi Nyanswop lottery winning ticket is: ${bifiMaxiNftWinningTicket}`);
-console.log(`The winning address is ${bifiMaxiNftWinner}`);
+// BIFI Maxi (10 Prizes) + 2 NFT
+console.log('Selecting BIFI Maxi Winners');
+for (let i = 1; i <= 10; i++) {
+  console.log(`BIFI winner ${i} ${pickWinner(bifiTickets, rng)}`);
+}
+console.log('BIFI NFT', pickWinner(bifiTickets, rng));
+console.log('BIFI NFT', pickWinner(bifiTickets, rng));
+console.log('---');
